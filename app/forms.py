@@ -2,11 +2,11 @@
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import TextField
+from wtforms import TextAreaField
 
 
 class UploadForm(FlaskForm):
-    description = TextField('Description')
+    description = TextAreaField('Description')
     photo = FileField('Photo', validators=[
         FileRequired(),
         FileAllowed(['jpg','jpeg', 'png'], 'Images only!')
