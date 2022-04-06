@@ -1,17 +1,16 @@
 <template>
-    <form @submit.prevent="uploadPhoto" class="d-flex flex-column justify-content-center">
+    <form
+        @submit.prevent="uploadPhoto" id="uploadForm" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="photo">Select a Photo to Upload</label>
+            <div></div>
+            <input type="file" class="form-control-file" id="photo" name="photo" required>
+        </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <input type="text" class="form-control" id="description" v-model="description" />
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
         </div>
-        <div class="form-group">
-            <label for="photo">Photo</label>
-            <div></div>
-            <input type="file" class="form-control-file" id="photo"/>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Upload</button>
-            </div>
-        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
     </form>
 </template>
 
@@ -19,15 +18,12 @@
 <script>
 export default {
     data() {
-        return {
-            csfr_token: ''
-        }
+        return {csrfToken: ''}
+    },
+    created() {
+        this.getCsfrToken();
     },
     methods: {
-        created() {
-            this.data.csfr_token();
-        },
-
         uploadPhoto() {
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
@@ -36,32 +32,32 @@ export default {
                 method: 'POST',
                 body: form_data,
                 headers: {
-                    'X-CSRF-TOKEN': this.csfr_token
+                    'X-CSRF-TOKEN': this.csrfToken
                 }
 
             })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (data) {
-                // display a success message
-                console.log(data);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    // display a success message
+                    console.log(data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
 
-        getCsfrToken(){
+        getCsfrToken() {
             let self = this;
             fetch("/api/csrf-token")
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                self.csrfToken = data.csfr_token;
-            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                    self.csrfToken = data.csrf_token;
+                })
         }
     },
 };
