@@ -1,1 +1,13 @@
 # Add any form classes for Flask-WTF here
+
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import TextField
+
+
+class UploadForm(FlaskForm):
+    description = TextField('Description')
+    photo = FileField('Photo', validators=[
+        FileRequired(),
+        FileAllowed(['jpg','jpeg', 'png'], 'Images only!')
+    ])
