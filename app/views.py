@@ -10,6 +10,7 @@ from flask import render_template, request, jsonify, send_file
 import os
 from app.forms import UploadForm
 from flask_wtf.csrf import generate_csrf
+from werkzeug.utils import secure_filename
 
 
 ###
@@ -27,9 +28,8 @@ def upload():
     if request.method == 'POST' and form.validate_on_submit():
         description = request.form['description']
         photo = request.files['photo']
-        filename = photo.filename
+        filename = secure_filename(photo.filename)
         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # return message, filename and description
         return jsonify({'message': "File Upload Successful", 'description': description, 'filename': filename })
     else:
         return jsonify({'message': "File Upload Failed", 'errors': form_errors(form)})
