@@ -1,13 +1,11 @@
 <template>
     <form @submit.prevent="uploadPhoto" id="uploadForm" method="POST" enctype="multipart/form-data">
         <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
-
-
-        <!-- Having issues here -->
-        <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err.errors }}</li>
+        <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
 
         <div class="form-group">
-            <label for="photo">Photo</label>
+            <label for="photo" id="photo-Label">Photo Upload</label>
+            <div></div>
             <input
                 type="file"
                 class="form-control-file"
@@ -57,13 +55,15 @@ export default {
                     // display a success message
                     self.message = data.message;
                     console.log(data);
+                    if(data.errors.length > 0) {
+                        self.errorFlask = data.errors;
+                    }
                 })
                 .catch(function (error) {
                     // display an error message
 
                     // Having issues here
-                    self.errorFlask = error.response.data.errors;
-                    self.error = error.message;
+                    self.errorFlask = error.errors;
                     console.log(error);
                 });
         },
@@ -83,3 +83,13 @@ export default {
 };
 
 </script>
+
+<style>
+.form-group {
+    margin-bottom: 15px;
+}
+#photo-Label {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+</style>
