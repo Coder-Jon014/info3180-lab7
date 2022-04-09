@@ -32,7 +32,7 @@ def upload():
         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return jsonify({'message': "File Upload Successful", 'description': description, 'filename': filename })
     else:
-        return jsonify({'message': "File Upload Failed", 'errors': form_errors(form)})
+        return jsonify({'message': "File Upload Failure",'errors': form_errors(form)})
 
 
 @app.route('/api/csrf-token', methods=['GET'])
