@@ -1,15 +1,26 @@
 <template>
-    <form
-        @submit.prevent="uploadPhoto" id="uploadForm" method="POST" enctype="multipart/form-data">
+    <form @submit.prevent="uploadPhoto" id="uploadForm" method="POST" enctype="multipart/form-data">
+        <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
+
+
+        <!-- Having issues here -->
+        <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err.errors }}</li>
+
         <div class="form-group">
-            <label for="photo">Select a Photo to Upload</label>
-            <div></div>
-            <input type="file" class="form-control-file" id="photo" name="photo" required>
+            <label for="photo">Photo</label>
+            <input
+                type="file"
+                class="form-control-file"
+                id="photo"
+                name="photo"
+                @change="fileSelected"
+            />
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>
+        <div></div>
         <button type="submit" class="btn btn-primary">Upload</button>
     </form>
 </template>
@@ -18,7 +29,9 @@
 <script>
 export default {
     data() {
-        return {csrfToken: ''}
+        // having issues here
+        return { csrfToken: '', message: '', errorFlask: [] }
+
     },
     created() {
         this.getCsfrToken();
@@ -27,6 +40,7 @@ export default {
         uploadPhoto() {
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
+            let self = this;
 
             fetch("/api/upload", {
                 method: 'POST',
@@ -41,9 +55,15 @@ export default {
                 })
                 .then(function (data) {
                     // display a success message
+                    self.message = data.message;
                     console.log(data);
                 })
                 .catch(function (error) {
+                    // display an error message
+
+                    // Having issues here
+                    self.errorFlask = error.response.data.errors;
+                    self.error = error.message;
                     console.log(error);
                 });
         },
