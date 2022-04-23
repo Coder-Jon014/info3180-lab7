@@ -49,7 +49,7 @@ def login():
                 auth = False
                 token = ''
                 payload = {'id': '', 'username': ''}
-                response = {'token': token, 'errmessage':"Invalid Credentials", 'auth': auth}
+                response = {'token': token, 'message':"Invalid Credentials", 'auth': auth}
                 return jsonify(response), 401
     return jsonify(response), 401
 
@@ -163,6 +163,7 @@ def car(id):
             car_type = car.car_type
             user_id = car.user_id
             color = car.color
+
             return jsonify(message=message, make=make, model=model, year=year, price=price, image=image, description=description, transmission=transmission, car_type=car_type, user_id=user_id, color=color),200
 
     return jsonify(message="Car not found", car=None)
@@ -268,6 +269,7 @@ def search():
                 }
                 allCars.append(car_dict)
             return jsonify(allCars = allCars, message = message)
+
     return jsonify(message="Invalid request", cars=None, errors=form_errors(form))
 
 # User Details
@@ -296,28 +298,9 @@ def user(id):
 # @login_required
 def favourites(id):
     if request.method == 'GET':
-        user = Users.query.filter_by(id=id).first()
-        user_id = user.id
-        favMessage = "Sucessfully found profile"
-        favourites = Favourites.query.filter_by(user_id=id).all()
-        allFavourites = []
-        for favourite in favourites:
-            car = Cars.query.filter_by(id=favourite.car_id).first()
-            car_dict = {
-                'id': car.id,
-                'make': car.make,
-                'model': car.model,
-                'year': car.year,
-                'price': car.price,
-                'image': car.image,
-                'description': car.description,
-                'user_id': car.user_id,
-                'color': car.color,
-                'transmission': car.transmission,
-                'car_type': car.car_type
-            }
-            allFavourites.append(car_dict)
-        return jsonify(allFavourites=allFavourites, favMessage=favMessage),200
+        user = Users.query.get(id)
+        favourites = Favourites.query.filter_by(user=user).all()
+        return jsonify(favourites=[favourite.serialize() for favourite in favourites])
 
     return jsonify(message="Invalid request", favourites=None)
 

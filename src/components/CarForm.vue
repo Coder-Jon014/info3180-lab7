@@ -36,7 +36,6 @@
                     <option value="Pickup">Pickup</option>
                     <option value="Van">Van</option>
                     <option value="Wagon">Wagon</option>
-                    <option value="Sports_Car">Sports Car</option>
                 </select>
             </div>
             <div class="form-group col-md-4 ">
@@ -47,24 +46,22 @@
                 </select>
             </div>
             <div class="form-group col-md-10 ">
-                <br>
                 <label for="description">Description</label>
                 <textarea type="description" class="form-control" id="description" v-model="description" name="description"></textarea>
             </div>
-            <br>
-            <label for="image">Upload Photo</label>
-            <br>
-            <div class="form-group">
-                <input type="file" id="image" class="form-control-file" name="image"
-                    @change="fileSelected" required>
-                <input type="hidden" id="user_id" class="form-control" name="user_id" :value="user_id">
-            
-            </div>
-            <br>
-            <button type="submit" class="btn btn-primary" @click.prevent="newCar">Register</button>
-            <!-- <button type="reset" name="reset" class="btn btn-warning">Undo all</button> -->
-
         </div>
+        <br>
+        <label for="image">Upload Photo</label>
+        <br>
+        <div class="form-group">
+            <input type="file" id="image" class="form-control-file" name="image"
+                @change="fileSelected" required>
+            <input type="hidden" id="user_id" class="form-control" name="user_id" :value="user_id">
+            
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary" @click.prevent="newCar">Save</button>
+        <button type="reset" name="reset" class="btn btn-warning">Undo all</button>
     </form>
 </template>
 
@@ -114,12 +111,9 @@ export default {
             .then(function(response) {
                 return response.json();
             })
-            .then(function(data){
-                console.log(data);
-                self.message = data.message;
-                if(data.errors.length > 0) {
-                    self.errorFlask = data.errors;
-                }
+            .then(function(response){
+                console.log(response);
+                self.message = response.message;
                 router.push('/explore');                
             })
             .catch(function(error) {

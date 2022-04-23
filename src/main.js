@@ -51,12 +51,6 @@ const store = createStore({
   
   
       }
-      if(to.path === '/login' && store.state.check === true){
-        console.log("was loggged in");
-        next('/');
-  
-  
-      }
       
     });
 

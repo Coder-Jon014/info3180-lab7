@@ -1,39 +1,23 @@
 <template>
-    <div class="profile-card">
-        <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">
-        <ul>
-            <li>
-                <h2>Name </h2>{{name}}
-            </li>
-            <li>
-                <h2>Username </h2> {{user_name}}
-            </li>
-            <li>
-               <h2>Email </h2>{{email}}
-            </li>
-            <li>
-                <h2>Biography </h2>{{biography}}
-            </li>
-            <li>
-                <h2>Date Joined </h2>{{date_joined}}
-            </li>
-        </ul>
+    <div>
+       <h2>Username </h2> {{user_name}}
     </div>
     <div>
-        <h2>Favourites</h2>
-        <div class="card-deck">
-            <div v-for="car in Favourites" class="card">
-                <img class="card-img-top" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">{{ car.make }} {{ car.model }}</h5>
-                    <p class="card-text">{{ car.year }}</p>
-                    <p class="card-text">{{ car.price }}</p>
-                    <a :href="'/cars/' + car.id" class="btn btn-primary">View more details</a>
-                </div>
-            </div>
-        </div>
+        <h2>Name </h2>{{name}}
     </div>
-    
+    <div>
+        <h2>Email </h2>{{email}}
+    </div>
+    <div>
+        <h2>Location </h2>{{location}}
+    </div>
+    <div>
+        <h2>Biography </h2>{{biography}}
+    </div>
+    <div>
+        <h2>Date Joined </h2>{{date_joined}}
+    </div>
+        <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">
 
 
 </template>
@@ -52,20 +36,11 @@ export default {
             biography: '',
             date_joined: '',
             profile_image: '',
-            Favourites: [],
-            make: '',
-            model: '',
-            year: '',
-            price: '',
-            image: '',
-            id: '',
-            favMessage: ''
         }
     },
     created() {
         this.getCsrfToken();
         this.getUserDetails();
-        this.getFavouriteList();
     },
 
     methods: {
@@ -109,28 +84,6 @@ export default {
                     console.log("biography: ", self.biography);
                     console.log("date_joined: ", self.date_joined);
                     // console.log("profile_image: ", self.profile_image);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
-        getFavouriteList() {
-            let self = this;
-            fetch("/api/users/" + sessionStorage.getItem("user_id") + "/favourites", {
-                method: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': this.csrf_token,
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                }
-            })
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    self.favMessage = data.favMessage;
-                    self.Favourites = data.allFavourites;
-                    console.log("favourites: ", self.Favourites);
-                    console.log("favMessage: ", self.favMessage);
                 })
                 .catch(function (error) {
                     console.log(error);
