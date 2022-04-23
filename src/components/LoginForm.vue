@@ -1,17 +1,17 @@
 <template>
+    <h1 class="h3 mb-3 font-weight-normal text-center">Log in to your account</h1>
     <form class="form-signin" @submit.prevent="loginUser" id="loginForm" method="POST" enctype="multipart/form-data">
       <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
       <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
-      <h1 class="h3 mb-3 font-weight-normal text-center">Log in to your account</h1>
       <div class="form-group col-md-4">
         <label for="username" class="sr-only">Username</label>
-      <input type="username" id="username" name="username" class="form-control" v-model="username" placeholder="Username" required>
+        <input type="username" id="username" name="username" class="form-control" v-model="username" placeholder="Username" required>
       </div>
       <div class="form-group col-md-4">
         <label for="password" class="sr-only">Password</label>
         <input type="password" id="password" name="password" class="form-control" v-model="password" placeholder="Password" required> <br>
       </div> 
-      <button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Sign in</button>
+      <button class="btn btn-lg btn-primary" type="submit">Login</button>
     </form>
 </template>
 
@@ -32,6 +32,7 @@ export default{
   },
   created() {
     this.getCsrfToken();
+    this.checkLogin();
   },
   methods: {
     loginUser() {
@@ -53,9 +54,11 @@ export default{
         .then(function (data) {
             // display a success message
             if(data.token == ''){
+              self.message = data.errmessage;
               sessionStorage.setItem('token', null);
               sessionStorage.setItem('user_id', null);
               store.commit('check', false);
+              console.log('message', self.errmessage);
             }
             else{
               console.log(data);
@@ -66,13 +69,14 @@ export default{
               sessionStorage.setItem('user_id', self.user_id);
               sessionStorage.setItem('auth', true);
               store.commit('check', true);
+              router.push('/');  
             }
               console.log("message: ", self.message);
               console.log("token: ", self.token);
               console.log("user_id: ", self.user_id);
               console.log("status: ", store.state.check);
 
-              router.push('/');  
+              
 
         }).catch(function (error) {
             // display an error message
@@ -91,6 +95,16 @@ export default{
               console.log(data);
               self.csrfToken = data.csrf_token;
           })
+    },
+    checkLogin() {
+      let self = this;
+      if(sessionStorage.getItem('token') != null){
+        self.token = sessionStorage.getItem('token');
+        self.user_id = sessionStorage.getItem('user_id');
+        self.message = 'You are logged in';
+        store.commit('check', true);
+        router.push('/');
+      }
     }
   }
 }
